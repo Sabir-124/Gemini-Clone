@@ -1,0 +1,49 @@
+@import "tailwindcss";
+body {
+  overflow: hidden;
+  padding-top: 64px;
+}
+.Shadow {
+  box-shadow: 0 0 5px 0px white;
+}
+.BlackShadow {
+  box-shadow: 0 0px 50px 50px #1b1c1d;
+}
+.upBlackShadow {
+  box-shadow: 0 0px 40px 20px #1b1c1d;
+}
+.markdown * {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.markdown pre {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.markdown table {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+@layer utilities {
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .chat-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+}
