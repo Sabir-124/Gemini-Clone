@@ -2,6 +2,7 @@
 body {
   overflow: hidden;
   padding-top: 64px;
+  background-color: #1b1c1d;
 }
 .Shadow {
   box-shadow: 0 0 5px 0px white;
