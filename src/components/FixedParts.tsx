@@ -11,7 +11,7 @@ const FixedParts = () => {
   const setPromptCall = useInputStore((state) => state.setPromptCall);
   const isTemporaryMsg = useInputStore((state) => state.isTemporaryMsg);
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const [timePeriod, setTimePeriod] = useState("");
 
   const handleTags = (tag: string) => {

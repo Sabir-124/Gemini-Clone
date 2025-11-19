@@ -5,6 +5,7 @@ import {
   type MutableRefObject,
   useRef,
   useCallback,
+  useEffect,
 } from "react";
 import Microphone from "./Microphone";
 import IconFactory from "../Component Factory/IconFactory";
@@ -22,7 +23,7 @@ import { useSystemStore } from "../stores/systemStore";
 import { useFileStore } from "../stores/fileStore";
 
 interface SearchAreaProp {
-  inputRef?: MutableRefObject<HTMLInputElement | null>;
+  inputRef?: MutableRefObject<HTMLTextAreaElement | null>;
 }
 
 const SearchArea = ({ inputRef }: SearchAreaProp) => {
@@ -67,6 +68,32 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
   const [label, setLabel] = useState(false);
   const [addfileText, setAddfileText] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const internalInputRef = useRef<HTMLTextAreaElement>(null);
+  const currentTextareaRef = inputRef || internalInputRef;
+
+  const adjustTextareaHeight = useCallback(() => {
+    if (currentTextareaRef.current) {
+      currentTextareaRef.current.style.height = "auto";
+      const scrollHeight = currentTextareaRef.current.scrollHeight;
+      const maxHeight = 200; // Maximum height in pixels
+      const minHeight = 35; // Minimum height in pixels
+      const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+      currentTextareaRef.current.style.height = newHeight + "px";
+    }
+  }, [currentTextareaRef]);
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [promptCall, adjustTextareaHeight]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      adjustTextareaHeight();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [adjustTextareaHeight]);
 
   const handleFileChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -127,34 +154,41 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
   );
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && promptCall.trim()) {
-        setScroll(true);
-        setTimeout(() => {
-          setScroll(false);
-        }, 3000);
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === "Enter") {
+        if (e.shiftKey) {
+        } else {
+          e.preventDefault();
 
-        ImagePhrase({
-          isOnline,
-          promptCall,
-          file,
-          fileImage,
-          currentChat,
-          currentId,
-          addToCurrentChat,
-          updateLastChatInAllChat,
-          setFile,
-          setAllChat,
-          setImageError,
-          setPromptCall,
-          setCurrentId,
-          setIsLoading,
-          setRender,
-          setIsChatOpen,
-          setOfflineMsg,
-          setLoadingPrompt,
-          isTemporaryMsg,
-        });
+          if (promptCall.trim()) {
+            setScroll(true);
+            setTimeout(() => {
+              setScroll(false);
+            }, 3000);
+
+            ImagePhrase({
+              isOnline,
+              promptCall,
+              file,
+              fileImage,
+              currentChat,
+              currentId,
+              addToCurrentChat,
+              updateLastChatInAllChat,
+              setFile,
+              setAllChat,
+              setImageError,
+              setPromptCall,
+              setCurrentId,
+              setIsLoading,
+              setRender,
+              setIsChatOpen,
+              setOfflineMsg,
+              setLoadingPrompt,
+              isTemporaryMsg,
+            });
+          }
+        }
       }
     },
     [
@@ -191,18 +225,21 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
         {file && (
           <FilePreview fileInputRef={fileInputRef} fileImage={fileImage} />
         )}
-        <input
-          type="text"
+        <textarea
+          rows={1}
           placeholder={`${
             isTemporaryMsg ? "Ask questions in a temporary chat" : "Ask Gemini"
           }`}
-          className={`focus:outline-none mb-5 pl-2 w-full ${
+          className={`focus:outline-none mb-5 pl-2 resize-none w-full chat-scrollbar ${
             isLoading ? "cursor-not-allowed" : ""
           }`}
-          ref={inputRef}
+          ref={currentTextareaRef}
           value={promptCall}
           disabled={isLoading}
-          onChange={(e) => setPromptCall(e.target.value)}
+          onChange={(e) => {
+            setPromptCall(e.target.value);
+            adjustTextareaHeight();
+          }}
           onKeyDown={handleKeyDown}
         />
         <div className="flex justify-between items-center">

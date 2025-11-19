@@ -36,6 +36,7 @@ const Sidebar = memo(() => {
   const isLoading = useInputStore((state) => state.isLoading);
   const isTemporaryMsg = useInputStore((state) => state.isTemporaryMsg);
   const setTemporaryMsg = useInputStore((state) => state.setTemporaryMsg);
+  const setPromptCall = useInputStore((state) => state.setPromptCall);
 
   const [showText, setShowText] = useState(false);
   const [tempText, setTempText] = useState(false);
@@ -48,6 +49,7 @@ const Sidebar = memo(() => {
     setIsSearchOpen(false);
     setBar(true);
     setTemporaryMsg(false);
+    setPromptCall("");
     if (currentChat.length === 0) {
       setShowText(true);
       setTimeout(() => {
@@ -65,6 +67,7 @@ const Sidebar = memo(() => {
     setBar,
     setTemporaryMsg,
     setCurrentChat,
+    setPromptCall,
     clearCurrentChat,
   ]);
 
@@ -77,6 +80,7 @@ const Sidebar = memo(() => {
       setIsSearchOpen(false);
       setBar(true);
       setTemporaryMsg(false);
+      setPromptCall("");
     },
     [
       setCurrentChat,
@@ -86,6 +90,7 @@ const Sidebar = memo(() => {
       setIsSearchOpen,
       setBar,
       setTemporaryMsg,
+      setPromptCall,
     ]
   );
 
@@ -94,7 +99,8 @@ const Sidebar = memo(() => {
     setRender(false);
     setIsChatOpen(false);
     setBar(true);
-  }, [setIsSearchOpen, setRender, setIsChatOpen, setBar]);
+    setPromptCall("");
+  }, [setIsSearchOpen, setRender, setIsChatOpen, setBar, setPromptCall]);
 
   const handleBarButton = useCallback(() => {
     if (!hideBar) {
@@ -110,7 +116,15 @@ const Sidebar = memo(() => {
     setCurrentChat([]);
     setRender(true);
     setIsSearchOpen(false);
-  }, [isTemporaryMsg, setTemporaryMsg, setBar, setCurrentChat, setRender]);
+    setPromptCall("");
+  }, [
+    isTemporaryMsg,
+    setTemporaryMsg,
+    setBar,
+    setCurrentChat,
+    setRender,
+    setPromptCall,
+  ]);
 
   const newchatVariants = {
     hidden: { opacity: 0, y: 2 },

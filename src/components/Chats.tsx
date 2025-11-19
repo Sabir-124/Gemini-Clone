@@ -93,9 +93,9 @@ const Chats = () => {
               )
             )}
             {/* User Prompt */}
-            <div className="self-end bg-[#282A2C] px-5 py-3 rounded-4xl rounded-tr-md max-w-[80%] mb-4">
+            <pre className="self-end bg-[#282A2C] px-5 py-3 rounded-3xl rounded-tr-md max-w-[80%] mb-4 font-sans">
               {chat.prompt}
-            </div>
+            </pre>
 
             {/* AI Response */}
             <div className="flex gap-5 items-start flex-1 overflow-hidden wrap-break-word">
