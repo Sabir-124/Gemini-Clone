@@ -3,13 +3,15 @@ import {
   createUserContent,
   createPartFromUri,
 } from "@google/genai";
-import { model } from "../Component Factory/AiModelModal";
+import { useSystemStore } from "../stores/systemStore";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 const ai = new GoogleGenAI({
   apiKey: apiKey,
 });
+
+const selectedModal = useSystemStore.getState().selectedModal;
 
 interface Message {
   role: "user" | "model";
@@ -20,7 +22,7 @@ let chatSession: any = null;
 
 const initializeChat = (history: Message[] = []) => {
   chatSession = ai.chats.create({
-    model: `gemini-2.5-${model}`,
+    model: `gemini-2.5-${selectedModal}`,
     history: history.map((msg) => ({
       role: msg.role,
       parts: [{ text: msg.parts }],

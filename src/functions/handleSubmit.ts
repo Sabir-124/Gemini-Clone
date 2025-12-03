@@ -59,6 +59,7 @@ export const handleSubmit = async ({
       if (isFirstMessage) {
         const chatSession = {
           id: Date.now(),
+          title: newMessage.prompt,
           messages: [newMessage],
           timestamp: new Date().toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -74,6 +75,7 @@ export const handleSubmit = async ({
       }
     }
     setFile(null);
+    setIsLoading(false);
   } catch (error) {
     console.error("Failed to fetch: ", error);
 
@@ -92,6 +94,7 @@ export const handleSubmit = async ({
       if (isFirstMessage) {
         const chatSession = {
           id: Date.now(),
+          title: errorMessage.prompt,
           messages: [errorMessage],
           timestamp: new Date().toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -107,7 +110,6 @@ export const handleSubmit = async ({
       }
     }
     setFile(null);
-  } finally {
     setIsLoading(false);
   }
 };

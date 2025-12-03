@@ -1,37 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SearchArea from "./SearchArea";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from "@fortawesome/free-solid-svg-icons";
 import { useInputStore } from "../stores/inputStore";
 
-const Tags = ["Write", "Build", "DeepSearch", "Learn"];
-
 const FixedParts = () => {
-  const setPromptCall = useInputStore((state) => state.setPromptCall);
   const isTemporaryMsg = useInputStore((state) => state.isTemporaryMsg);
 
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const [timePeriod, setTimePeriod] = useState("");
-
-  const handleTags = (tag: string) => {
-    setPromptCall(tag);
-    inputRef.current?.focus();
-  };
 
   const greetingVariants = useMemo(
     () => ({
       initial: { opacity: 0, y: 2 },
       animate: { opacity: 1, y: 0 },
       transition: { delay: 0.8 },
-    }),
-    []
-  );
-
-  const tagsAnimation = useMemo(
-    () => ({
-      initial: { opacity: 0 },
-      animate: { opacity: isTemporaryMsg ? 0 : 1 },
     }),
     []
   );
@@ -67,30 +50,13 @@ const FixedParts = () => {
 
           <div className="hidden lg:block w-full max-w-[800px]">
             <div className="px-4">
-              <SearchArea inputRef={inputRef} />
+              <SearchArea />
             </div>
           </div>
-
-          <motion.ul
-            {...tagsAnimation}
-            className={`sm:flex hidden gap-2 ${
-              isTemporaryMsg ? "pointer-events-none" : ""
-            }`}
-          >
-            {Tags.map((tag: string, index) => (
-              <li
-                onClick={() => handleTags(tag)}
-                key={index}
-                className="bg-[#353739] hover:bg-[#494c4f] p-3 px-5 cursor-pointer rounded-full transition"
-              >
-                {tag}
-              </li>
-            ))}
-          </motion.ul>
         </>
       ) : (
         <>
-          <div className="flex flex-col gap-3 items-center px-15 ">
+          <div className="flex flex-col gap-1 items-center px-15 ">
             <div className="w-15 h-15 flex justify-center items-center rounded-full bg-[#282A2C]">
               <FontAwesomeIcon size="2x" icon={faMessage} />
             </div>
@@ -102,7 +68,7 @@ const FixedParts = () => {
 
           <div className="hidden lg:block w-full max-w-[800px]">
             <div className="px-4">
-              <SearchArea inputRef={inputRef} />
+              <SearchArea />
             </div>
           </div>
         </>

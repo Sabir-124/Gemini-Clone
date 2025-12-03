@@ -1,19 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  useState,
-  type ChangeEvent,
-  type MutableRefObject,
-  useRef,
-  useCallback,
-  useEffect,
-} from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Microphone from "./Microphone";
 import IconFactory from "../Component Factory/IconFactory";
 import { faChevronDown, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { supportedFiles } from "../data/supportedFiles";
 import FilePreview from "./FilePreview";
 import { ImagePhrase } from "../functions/imagePhrase";
-import { model } from "../Component Factory/AiModelModal";
 import AiModelModal from "../Component Factory/AiModelModal";
 import Label from "../Component Factory/Label";
 import { useUIStore } from "../stores/uiStore";
@@ -21,12 +12,9 @@ import { useInputStore } from "../stores/inputStore";
 import { useChatStore } from "../stores/chatStore";
 import { useSystemStore } from "../stores/systemStore";
 import { useFileStore } from "../stores/fileStore";
+import FileModal from "../Component Factory/FileModal";
 
-interface SearchAreaProp {
-  inputRef?: MutableRefObject<HTMLTextAreaElement | null>;
-}
-
-const SearchArea = ({ inputRef }: SearchAreaProp) => {
+const SearchArea = () => {
   const setRender = useUIStore((state) => state.setRender);
   const setIsChatOpen = useUIStore((state) => state.setIsChatOpen);
   const setModelOpen = useUIStore((state) => state.setModelOpen);
@@ -36,6 +24,8 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
   const isLoading = useInputStore((state) => state.isLoading);
   const setIsLoading = useInputStore((state) => state.setIsLoading);
   const isTemporaryMsg = useInputStore((state) => state.isTemporaryMsg);
+  const isFileModalOpen = useUIStore((state) => state.isFileModalOpen);
+  const setFileModalOpen = useUIStore((state) => state.setFileModalOpen);
 
   const currentChat = useChatStore((state) => state.currentChat);
   const currentId = useChatStore((state) => state.currentId);
@@ -52,31 +42,29 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
   const isOnline = useSystemStore((state) => state.isOnline);
   const isLgScreen = useSystemStore((state) => state.isLgScreen);
   const setScroll = useSystemStore((state) => state.setScroll);
+  const selectedModal = useSystemStore((state) => state.selectedModal);
 
   const file = useFileStore((state) => state.file);
   const fileImage = useFileStore((state) => state.fileImage);
   const setFile = useFileStore((state) => state.setFile);
-  const setFilePreview = useFileStore((state) => state.setFilePreview);
-  const setVisible = useFileStore((state) => state.setVisible);
   const isVisible = useFileStore((state) => state.isVisible);
-  const setFileImage = useFileStore((state) => state.setFileImage);
   const fileMsg = useFileStore((state) => state.fileMsg);
-  const setFileMsg = useFileStore((state) => state.setFileMsg);
   const isSizeError = useFileStore((state) => state.isSizeError);
-  const setSizeError = useFileStore((state) => state.setSizeError);
 
   const [label, setLabel] = useState(false);
   const [addfileText, setAddfileText] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const internalInputRef = useRef<HTMLTextAreaElement>(null);
-  const currentTextareaRef = inputRef || internalInputRef;
+  const modalRef = useRef<HTMLDivElement>(null);
+  const AiModalRef = useRef<HTMLDivElement>(null);
+  const currentTextareaRef = internalInputRef;
 
   const adjustTextareaHeight = useCallback(() => {
     if (currentTextareaRef.current) {
       currentTextareaRef.current.style.height = "auto";
       const scrollHeight = currentTextareaRef.current.scrollHeight;
-      const maxHeight = 200; // Maximum height in pixels
-      const minHeight = 35; // Minimum height in pixels
+      const maxHeight = 200;
+      const minHeight = 35;
       const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
       currentTextareaRef.current.style.height = newHeight + "px";
     }
@@ -95,63 +83,56 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
     return () => window.removeEventListener("resize", handleResize);
   }, [adjustTextareaHeight]);
 
-  const handleFileChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const selectedFile = e.target.files?.[0];
+  // File modal click-outside handler
+  useEffect(() => {
+    const handleFileModalOpen = (e: globalThis.MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isLabelClick =
+        target.tagName === "LABEL" || target.closest("label");
+      const isInputClick = target.tagName === "INPUT";
 
-      const MAX_FILE_SIZE = 30 * 1024 * 1024;
-
-      if (selectedFile && selectedFile?.size < MAX_FILE_SIZE) {
-        const fileExtension = selectedFile.name.split(".").pop()?.toLowerCase();
-
-        supportedFiles.some((file) => {
-          if (fileExtension && file.file === fileExtension) {
-            setFileImage(file.icon);
-            setVisible(false);
-            setFile(selectedFile);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              setFilePreview(reader.result as string);
-            };
-            reader.readAsDataURL(selectedFile);
-          }
-        });
-
-        if (
-          fileExtension &&
-          !supportedFiles.some((file) => file.file.includes(fileExtension))
-        ) {
-          setFileMsg(fileExtension);
-          setVisible(true);
-          setTimeout(() => {
-            setVisible(false);
-          }, 3500);
-
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
-        }
-      } else {
-        setSizeError(true);
-        setTimeout(() => {
-          setSizeError(false);
-        }, 3500);
-
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node) &&
+        !isLabelClick &&
+        !isInputClick
+      ) {
+        setFileModalOpen(false);
       }
-    },
-    [
-      setFile,
-      setFileImage,
-      setFilePreview,
-      setFileMsg,
-      setVisible,
-      setSizeError,
-      fileInputRef,
-    ]
-  );
+    };
+
+    if (isFileModalOpen) {
+      setTimeout(() => {
+        document.addEventListener("mousedown", handleFileModalOpen);
+      }, 0);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleFileModalOpen);
+    };
+  }, [isFileModalOpen, setFileModalOpen]);
+
+  // AI modal click-outside handler - FIXED
+  useEffect(() => {
+    const handleAiModalOpen = (e: globalThis.MouseEvent) => {
+      if (
+        AiModalRef.current &&
+        !AiModalRef.current.contains(e.target as Node)
+      ) {
+        setModelOpen(false);
+      }
+    };
+
+    if (isModelOpen) {
+      setTimeout(() => {
+        document.addEventListener("mousedown", handleAiModalOpen);
+      }, 0);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleAiModalOpen);
+    };
+  }, [isModelOpen, setModelOpen]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -219,8 +200,8 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
     <>
       <div
         className={`flex flex-col justify-center rounded-4xl p-4 pt-5 transition border border-white/30 ${
-          isLoading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+          isTemporaryMsg ? "border-dashed" : ""
+        } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         {file && (
           <FilePreview fileInputRef={fileInputRef} fileImage={fileImage} />
@@ -230,7 +211,7 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
           placeholder={`${
             isTemporaryMsg ? "Ask questions in a temporary chat" : "Ask Gemini"
           }`}
-          className={`focus:outline-none mb-5 pl-2 resize-none w-full chat-scrollbar ${
+          className={`focus:outline-none pl-2 resize-none w-full chat-scrollbar ${
             isLoading ? "cursor-not-allowed" : ""
           }`}
           ref={currentTextareaRef}
@@ -242,31 +223,34 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
           }}
           onKeyDown={handleKeyDown}
         />
+
         <div className="flex justify-between items-center">
           <div
             onClick={() => setLabel(!label)}
             className="flex gap-3 items-center relative"
           >
-            <label
+            <div
               onMouseEnter={() => setAddfileText(true)}
               onMouseLeave={() => setAddfileText(false)}
-              htmlFor="fileUpload"
+              onClick={(e) => {
+                e.stopPropagation();
+                setFileModalOpen(!isFileModalOpen);
+              }}
               className="relative"
+              ref={modalRef}
             >
               <IconFactory icon={faPlus} />
-              <div className="absolute lg:-bottom-full lg:left-1/2 lg:-translate-x-1/2 lg:top-auto top-1/2 -translate-y-1/3 left-[125%] w-max pointer-events-none">
+              <div className="absolute lg:-bottom-full lg:left-1/2 lg:-translate-x-1/2 lg:top-auto top-1/2 -translate-y-1/2 left-[125%] w-max pointer-events-none">
                 <Label condition={addfileText} text="Add file" />
               </div>
-            </label>
-            <input
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              type="file"
-              id="fileUpload"
-              className="hidden pointer-events-none"
-            />
 
-            {/* file errors */}
+              <FileModal
+                fileInputRef={fileInputRef}
+                modalRef={modalRef}
+                inputId="fileUpload-search"
+              />
+            </div>
+
             <div
               className={`absolute left-[125%] w-max bg-[#353739] text-red-500 text-xs p-2 py-1 rounded-lg z-10 ${
                 isVisible
@@ -288,13 +272,15 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
             </div>
           </div>
 
-          {/* modal selection & microphone */}
           <div className="flex gap-3 items-center">
             <div
-              onClick={() => setModelOpen(!isModelOpen)}
-              className="flex items-center gap-3 hover:bg-white/20 px-3 py-2 rounded-full cursor-pointer relative ref"
+              onClick={(e) => {
+                e.stopPropagation();
+                setModelOpen(!isModelOpen);
+              }}
+              className="flex items-center gap-3 hover:bg-white/20 px-3 py-2 rounded-full cursor-pointer relative"
             >
-              <span>2.5 {model}</span>
+              <span>2.5 {selectedModal}</span>
               <div
                 className={`${
                   isModelOpen ? "rotate-180" : "rotate-0"
@@ -304,8 +290,10 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
               </div>
 
               <div
+                ref={AiModalRef}
+                onClick={(e) => e.stopPropagation()}
                 className={`absolute top-[-500%] right-0 w-70 flex flex-col gap-4 bg-[#353739] p-4 rounded-lg ${
-                  !isModelOpen ? "pointer-events-none " : ""
+                  !isModelOpen ? "pointer-events-none" : ""
                 } ${
                   isLgScreen && isModelOpen
                     ? "opacity-100 translate-y-0 scale-100"
@@ -316,7 +304,6 @@ const SearchArea = ({ inputRef }: SearchAreaProp) => {
               </div>
             </div>
 
-            {/* Microphone section */}
             <Microphone />
           </div>
         </div>

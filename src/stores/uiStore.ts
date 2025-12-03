@@ -9,6 +9,8 @@ interface UIState {
   openImage: boolean;
   menuText: boolean;
   render: boolean;
+  isFileModalOpen: boolean;
+  isStarredMessagesOpen: boolean;
   setHideBar: (bool: boolean) => void;
   setBar: (bool: boolean) => void;
   setIsSearchOpen: (bool: boolean) => void;
@@ -17,6 +19,8 @@ interface UIState {
   setOpenImage: (bool: boolean) => void;
   setMenuText: (bool: boolean) => void;
   setRender: (bool: boolean) => void;
+  setFileModalOpen: (bool: boolean) => void;
+  setStarredMessagesOpen: (bool: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -28,6 +32,8 @@ export const useUIStore = create<UIState>((set) => ({
   openImage: false,
   menuText: false,
   render: true,
+  isFileModalOpen: false,
+  isStarredMessagesOpen: false,
 
   setHideBar: (bool) => set({ hideSidebar: bool }),
   setBar: (bool) => set({ hideBar: bool }),
@@ -37,4 +43,6 @@ export const useUIStore = create<UIState>((set) => ({
   setOpenImage: (bool) => set({ openImage: bool }),
   setMenuText: (bool) => set({ menuText: bool }),
   setRender: (bool) => set({ render: bool }),
+  setFileModalOpen: (bool) => set({ isFileModalOpen: bool }),
+  setStarredMessagesOpen: (bool) => set({ isStarredMessagesOpen: bool }),
 }));

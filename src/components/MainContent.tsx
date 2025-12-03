@@ -3,13 +3,15 @@ import { motion } from "framer-motion";
 import FixedParts from "./FixedParts";
 import Chats from "./Chats";
 import RecentSearches from "./RecentSearches";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDown, faBars } from "@fortawesome/free-solid-svg-icons";
 import IconFactory from "../Component Factory/IconFactory";
 import { useUIStore } from "../stores/uiStore";
 import { useChatStore } from "../stores/chatStore";
 import { useInputStore } from "../stores/inputStore";
 import { useSystemStore } from "../stores/systemStore";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import StarredMessages from "./StarredMessages";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const MainContent = () => {
   const render = useUIStore((state) => state.render);
@@ -22,6 +24,12 @@ const MainContent = () => {
   const setBar = useUIStore((state) => state.setBar);
   const isSearchOpen = useUIStore((state) => state.isSearchOpen);
   const isChatOpen = useUIStore((state) => state.isChatOpen);
+  const isStarredMessagesOpen = useUIStore(
+    (state) => state.isStarredMessagesOpen
+  );
+  const setStarredMessagesOpen = useUIStore(
+    (state) => state.setStarredMessagesOpen
+  );
 
   const setCurrentChat = useChatStore((state) => state.setCurrentChat);
   const clearCurrentChat = useChatStore((state) => state.clearCurrentChat);
@@ -39,6 +47,7 @@ const MainContent = () => {
     setIsChatOpen(false);
     setIsSearchOpen(false);
     setTemporaryMsg(false);
+    setStarredMessagesOpen(false);
     if (currentChat.length > 0) {
       setCurrentChat([]);
       clearCurrentChat();
@@ -51,6 +60,7 @@ const MainContent = () => {
     setCurrentChat,
     clearCurrentChat,
     currentChat.length,
+    setStarredMessagesOpen,
   ]);
 
   const handleSidebarToggle = useCallback(() => {
@@ -68,18 +78,27 @@ const MainContent = () => {
   const searchAreaAnimation = useMemo(
     () => ({
       opacity:
-        (!render && !isSearchOpen) || (!isLgScreen && !isSearchOpen) ? 1 : 0,
-      display: (!render && !isSearchOpen) || !isLgScreen ? "flex" : "none",
+        (!render && !isSearchOpen && !isStarredMessagesOpen) ||
+        (!isLgScreen && !isSearchOpen && !isStarredMessagesOpen)
+          ? 1
+          : 0,
+      display:
+        (!render && !isSearchOpen && !isStarredMessagesOpen) ||
+        (!isLgScreen && !isSearchOpen && !isStarredMessagesOpen)
+          ? "flex"
+          : "none",
     }),
-    [render, isSearchOpen, isLgScreen]
+    [render, isSearchOpen, isLgScreen, isStarredMessagesOpen]
   );
 
   const searchAreaTransition = useMemo(
-    () => (!render && !isSearchOpen ? { delay: 0.5 } : {}),
-    [render, isSearchOpen]
+    () =>
+      !render && !isSearchOpen && !isStarredMessagesOpen ? { delay: 0.5 } : {},
+    [render, isSearchOpen, isStarredMessagesOpen]
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
+
   const scrollToBottom = () => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
@@ -88,6 +107,22 @@ const MainContent = () => {
       });
     }
   };
+  const [isAtBottom, setAtBottom] = useState(true);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const atBottom =
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight - 10;
+      setAtBottom(atBottom);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -97,7 +132,7 @@ const MainContent = () => {
     <div className="relative">
       {/* fixed parts */}
       <div
-        className={`w-full absolute top-1/2 -translate-y-[calc(100vh/4)] text-white ${
+        className={`w-full absolute top-1/3 -translate-y-1/2 text-white ${
           !render ? "pointer-events-none opacity-0" : "opacity-100"
         } transition`}
       >
@@ -126,9 +161,7 @@ const MainContent = () => {
         {/* Chats and recent searches */}
         <div
           ref={containerRef}
-          className={`flex-1 overflow-y-auto pt-4 mb-15 chat-scrollbar ${
-            isLoading ? "pb-[calc(100vh-23rem)]" : ""
-          }`}
+          className="flex-1 overflow-y-auto pt-4 mb-15 chat-scrollbar"
         >
           {isSearchOpen && (
             <div
@@ -142,16 +175,35 @@ const MainContent = () => {
             </div>
           )}
 
+          {isStarredMessagesOpen && (
+            <div
+              className={`flex justify-center items-center px-4 ${
+                isStarredMessagesOpen ? "opacity-100" : "opacity-0"
+              } transition delay-500`}
+            >
+              <div className="w-full max-w-[650px]">
+                <StarredMessages />
+              </div>
+            </div>
+          )}
+
           {isChatOpen && (
-            <div className="flex justify-center items-center px-4">
+            <div
+              className="flex justify-center items-center px-4"
+              style={{
+                paddingBottom: isLoading ? `50vh` : "0",
+              }}
+            >
               <div className="w-full max-w-[800px]">
                 <Chats />
                 <div
                   className={`flex flex-col gap-1 ${
-                    isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
+                    isLoading
+                      ? "opacity-100 flex"
+                      : "opacity-0 hidden pointer-events-none"
                   } ${currentChat.length > 0 ? "mt-10" : ""} transition-all`}
                 >
-                  <pre className="self-end bg-[#282A2C] px-5 py-3 rounded-3xl rounded-tr-md max-w-[80%] mb-4 font-sans">
+                  <pre className="self-end bg-[#282A2C] px-5 py-3 rounded-3xl rounded-tr-md max-w-[80%] mb-4 font-sans overflow-x-auto">
                     {loadingPrompt}
                   </pre>
                   <div className="flex gap-5 items-start flex-1 overflow-hidden wrap-break-word">
@@ -175,19 +227,31 @@ const MainContent = () => {
         <motion.div
           animate={searchAreaAnimation}
           transition={searchAreaTransition}
-          className={`sticky bottom-15 w-full flex flex-col items-center gap-2 py-3 bg-[#1B1C1D] BlackShadow ${
-            isLoading ? "pointer-events-none" : ""
-          }`}
+          className={`sticky bottom-15 w-full flex flex-col items-center gap-3 py-3 bg-[#1B1C1D] BlackShadow`}
         >
-          <div className="w-full max-w-[800px] px-4">
-            <SearchArea />
-          </div>
-          <motion.div
-            animate={{ display: isChatOpen ? "block" : "none" }}
-            className="text-center w-full text-xs"
+          <div
+            onClick={scrollToBottom}
+            className={`flex justify-center items-center rounded-full w-9 h-9 bg-[#282A2C] hover:bg-[#404345] cursor-pointer transition ${
+              isAtBottom ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
           >
-            Gemini can make mistakes, so double-check it.
-          </motion.div>
+            <FontAwesomeIcon icon={faArrowDown} />
+          </div>
+          <div
+            className={`flex flex-col gap-2 w-full max-w-[800px] px-4 ${
+              isLoading ? "pointer-events-none" : ""
+            }`}
+          >
+            <div>
+              <SearchArea />
+            </div>
+            <motion.div
+              animate={{ display: isChatOpen ? "block" : "none" }}
+              className="text-center w-full text-xs"
+            >
+              Gemini can make mistakes, so double-check it.
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </div>

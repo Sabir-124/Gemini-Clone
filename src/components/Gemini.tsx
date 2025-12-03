@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
 import BacksideDark from "./BacksideDark";
@@ -6,6 +6,7 @@ import AiModelModal from "../Component Factory/AiModelModal";
 import AlertModal from "../Component Factory/AlertModal";
 import { useSystemStore } from "../stores/systemStore";
 import { useUIStore } from "../stores/uiStore";
+import FileModal from "../Component Factory/FileModal";
 
 interface GeminiProps {
   children: [ReactNode, ReactNode];
@@ -13,6 +14,8 @@ interface GeminiProps {
 }
 
 const Gemini = ({ children, sidebarWeight }: GeminiProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [sidebar, mainContent] = children;
   const sidebarWidth = `${sidebarWeight}rem`;
 
@@ -26,6 +29,7 @@ const Gemini = ({ children, sidebarWeight }: GeminiProps) => {
   const hideBar = useUIStore((state) => state.hideBar);
   const setHideBar = useUIStore((state) => state.setHideBar);
   const isModelOpen = useUIStore((state) => state.isModelOpen);
+  const isFileModalOpen = useUIStore((state) => state.isFileModalOpen);
 
   useNetworkStatus();
 
@@ -43,7 +47,7 @@ const Gemini = ({ children, sidebarWeight }: GeminiProps) => {
       {/* Sidebar */}
 
       <motion.div
-        className="fixed top-0 lg:left-0 -left-full h-screen overflow-y-auto z-50"
+        className="fixed top-0 lg:left-0 -left-full h-screen z-50"
         animate={{
           width: isLgScreen ? sidebarWidth : "80vw",
           left: !hideBar ? "0%" : "",
@@ -87,8 +91,13 @@ const Gemini = ({ children, sidebarWeight }: GeminiProps) => {
         <AiModelModal />
       </div>
 
+      {/* File upload modal */}
+      <FileModal fileInputRef={fileInputRef} />
+
       {/* when sidebar is opened */}
-      {(!hideBar || (isModelOpen && !isLgScreen)) && <BacksideDark />}
+      {(!hideBar ||
+        (isModelOpen && !isLgScreen) ||
+        (isFileModalOpen && !isLgScreen)) && <BacksideDark />}
     </div>
   );
 };

@@ -48,3 +48,18 @@ body {
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
 }
+
+.highlight-message {
+  animation: highlight 2s ease-in-out;
+}
+
+@keyframes highlight {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+  }
+}

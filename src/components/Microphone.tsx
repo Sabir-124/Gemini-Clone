@@ -48,6 +48,7 @@ const Microphone: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const [microphoneText, setMicrophoneText] = useState(false);
+  const [sendText, setSendText] = useState(false);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -169,7 +170,11 @@ const Microphone: React.FC = () => {
     <div className="relative">
       <div>
         {promptCall.trim() ? (
-          <div onClick={handleSendButton}>
+          <div
+            onMouseEnter={() => setSendText(true)}
+            onMouseLeave={() => setSendText(false)}
+            onClick={handleSendButton}
+          >
             <IconFactory icon={faPaperPlane} />
           </div>
         ) : (
@@ -183,7 +188,10 @@ const Microphone: React.FC = () => {
         )}
       </div>
       <div className="absolute -top-[75%] right-0 lg:left-1/2 lg:-translate-x-1/2 w-max pointer-events-none">
-        <Label condition={microphoneText} text="Chat with your voice" />
+        <Label
+          condition={promptCall.trim() ? sendText : microphoneText}
+          text={promptCall.trim() ? "Send message" : "Chat with your voice"}
+        />
       </div>
     </div>
   );
