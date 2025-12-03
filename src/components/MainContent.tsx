@@ -9,7 +9,14 @@ import { useUIStore } from "../stores/uiStore";
 import { useChatStore } from "../stores/chatStore";
 import { useInputStore } from "../stores/inputStore";
 import { useSystemStore } from "../stores/systemStore";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Activity,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import StarredMessages from "./StarredMessages";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -131,13 +138,13 @@ const MainContent = () => {
   return (
     <div className="relative">
       {/* fixed parts */}
-      <div
-        className={`w-full absolute top-1/3 -translate-y-1/2 text-white ${
-          !render ? "pointer-events-none opacity-0" : "opacity-100"
-        } transition`}
-      >
-        <FixedParts />
-      </div>
+      <Activity mode={render ? "visible" : "hidden"}>
+        <div
+          className={`w-full absolute top-1/3 -translate-y-1/2 text-white transition`}
+        >
+          <FixedParts />
+        </div>
+      </Activity>
 
       <div
         className={`bg-[#1B1C1D] text-white h-screen flex flex-col w-full overflow-x-hidden`}
@@ -163,31 +170,27 @@ const MainContent = () => {
           ref={containerRef}
           className="flex-1 overflow-y-auto pt-4 mb-15 chat-scrollbar"
         >
-          {isSearchOpen && (
+          <Activity mode={isSearchOpen ? "visible" : "hidden"}>
             <div
-              className={`flex justify-center items-center px-4 ${
-                isSearchOpen ? "opacity-100" : "opacity-0"
-              } transition delay-500`}
+              className={`flex justify-center items-center px-4 transition delay-500`}
             >
               <div className="w-full max-w-[650px]">
                 <RecentSearches />
               </div>
             </div>
-          )}
+          </Activity>
 
-          {isStarredMessagesOpen && (
+          <Activity mode={isStarredMessagesOpen ? "visible" : "hidden"}>
             <div
-              className={`flex justify-center items-center px-4 ${
-                isStarredMessagesOpen ? "opacity-100" : "opacity-0"
-              } transition delay-500`}
+              className={`flex justify-center items-center px-4 transition delay-500`}
             >
               <div className="w-full max-w-[650px]">
                 <StarredMessages />
               </div>
             </div>
-          )}
+          </Activity>
 
-          {isChatOpen && (
+          <Activity mode={isChatOpen ? "visible" : "hidden"}>
             <div
               className="flex justify-center items-center px-4"
               style={{
@@ -220,7 +223,7 @@ const MainContent = () => {
                 </div>
               </div>
             </div>
-          )}
+          </Activity>
         </div>
 
         {/* Sticky bottom search */}

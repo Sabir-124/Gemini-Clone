@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useCallback, useState, type RefObject } from "react";
+import { Activity, useCallback, useState, type RefObject } from "react";
 import { useFileStore } from "../stores/fileStore";
 
 const FilePreview = ({
@@ -61,14 +61,15 @@ const FilePreview = ({
           </div>
         )
       )}
-      {isMarkVisible && (
+
+      <Activity mode={isMarkVisible ? "visible" : "hidden"}>
         <div
           onClick={handleXMarkClick}
           className="absolute top-1 right-1 bg-white/30 rounded-full w-6 h-6 flex justify-center items-center cursor-pointer z-50"
         >
           <FontAwesomeIcon icon={faXmark} />
         </div>
-      )}
+      </Activity>
     </div>
   );
 };

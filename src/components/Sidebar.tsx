@@ -15,6 +15,7 @@ import React, {
   useRef,
   useEffect,
   type MouseEvent,
+  Activity,
 } from "react";
 import { motion } from "framer-motion";
 import Label from "../Component Factory/Label";
@@ -294,7 +295,7 @@ const Sidebar = memo(() => {
                 onMouseEnter={() => setNewchatText(true)}
                 onMouseLeave={() => setNewchatText(false)}
               >
-                {hideSidebar && showText && (
+                <Activity mode={hideSidebar && showText ? "visible" : "hidden"}>
                   <motion.div
                     variants={newchatVariants}
                     initial="hidden"
@@ -303,7 +304,7 @@ const Sidebar = memo(() => {
                   >
                     You are already in new chat
                   </motion.div>
-                )}
+                </Activity>
                 <div className="absolute left-1/2 -translate-x-1/2 -bottom-[75%] w-max pointer-events-none">
                   <Label condition={newchatText} text="New Chat" />
                 </div>

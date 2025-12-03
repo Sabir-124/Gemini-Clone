@@ -4,7 +4,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useMemo, useState } from "react";
+import { Activity, useCallback, useMemo, useState } from "react";
 import { useChatStore } from "../stores/chatStore";
 import { useUIStore } from "../stores/uiStore";
 import { useInputStore } from "../stores/inputStore";
@@ -112,7 +112,7 @@ const StarredMessages = () => {
         {starredMessages.length === 0 ? (
           <div className="text-center lg:mt-5">No starred Messages</div>
         ) : (
-          starredMessages.length > 0 && (
+          <Activity mode={starredMessages.length > 0 ? "visible" : "hidden"}>
             <>
               <div className="mb-5 ml-2 text-white/70">Starred Messages</div>
               <div className="scroll-y-auto flex flex-col gap-1">
@@ -144,7 +144,7 @@ const StarredMessages = () => {
                 )}
               </div>
             </>
-          )
+          </Activity>
         )}
       </div>
     </div>

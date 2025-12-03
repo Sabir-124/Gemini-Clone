@@ -3,7 +3,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { motion } from "framer-motion";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ImagePreview from "./ImagePreview";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Activity } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faRefresh,
@@ -17,7 +17,7 @@ import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
 import { useUIStore } from "../stores/uiStore";
 import { useChatStore, type currentChatProps } from "../stores/chatStore";
 import Option from "../Component Factory/Option";
-import { useInputStore } from "../stores/inputStore";
+// import { useInputStore } from "../stores/inputStore";
 
 const Chats = () => {
   // stores
@@ -40,7 +40,7 @@ const Chats = () => {
   } | null>(null);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
   const [isCopied, setCopied] = useState(false);
-  const [edit, setEdit] = useState(false);
+  // const [edit, setEdit] = useState(false);
 
   // Refs for each message
   const messageRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -187,7 +187,7 @@ const Chats = () => {
                 className="self-end sm:px-5 py-3 rounded-3xl rounded-tr-md max-w-full mb-4 font-sans"
               >
                 <div className="flex flex-col gap-2">
-                  <pre className="bg-[#282A2C] px-5 py-3 rounded-3xl rounded-tr-md max-w-full font-sans overflow-x-auto">
+                  <pre className="bg-[#282A2C] px-5 py-3 rounded-3xl rounded-tr-md w-fit self-end max-w-full font-sans overflow-x-auto">
                     {chat.prompt}
                   </pre>
                   <div className={`flex gap-1 items-center justify-end`}>
@@ -418,7 +418,7 @@ const Chats = () => {
               <div
                 onMouseEnter={() => handleOnhoverPrompt(chat.id, "response")}
                 onMouseLeave={() => handleLeaveHoverPrompt()}
-                className={`flex gap-1 items-center sm:ml-11 -mt-2`}
+                className={`flex gap-1 items-center sm:ml-11`}
               >
                 <div onClick={() => handleCopyMessage(chat.response)}>
                   <Option
@@ -452,7 +452,7 @@ const Chats = () => {
         ))}
       </div>
 
-      {openImage && selectedImage && (
+      <Activity mode={openImage && selectedImage ? "visible" : "hidden"}>
         <div className="fixed top-0 right-0 left-0 bottom-0 bg-black/70 z-50">
           <div className="h-full flex justify-center items-center relative">
             <motion.img
@@ -471,7 +471,7 @@ const Chats = () => {
             </div>
           </div>
         </div>
-      )}
+      </Activity>
 
       {/* <style>{`
         .highlight-message {

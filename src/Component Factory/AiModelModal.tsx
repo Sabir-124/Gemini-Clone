@@ -4,6 +4,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useUIStore } from "../stores/uiStore";
 import { useSystemStore } from "../stores/systemStore";
 import type React from "react";
+import { Activity } from "react";
 
 const AiModelModal = () => {
   const setSelectedModal = useSystemStore((state) => state.setSelectedModal);
@@ -36,11 +37,13 @@ const AiModelModal = () => {
               <div className="text-white">{modal.description}</div>
               <div className="text-[#bbbfc1] text-xs">2.5 {modal.name}</div>
             </div>
-            {selectedModal === modal.name && (
+            <Activity
+              mode={selectedModal === modal.name ? "visible" : "hidden"}
+            >
               <div>
                 <FontAwesomeIcon color="white" icon={faCheckCircle} />
               </div>
-            )}
+            </Activity>
           </div>
         ))}
       </div>
