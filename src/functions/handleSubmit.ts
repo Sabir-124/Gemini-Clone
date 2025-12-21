@@ -1,38 +1,31 @@
 import { fetchAIResponse } from "../API/apiCall";
-import type { ChatSession, currentChatProps } from "../stores/chatStore";
+import {
+  useChatStore,
+  type currentChatProps,
+  type EachChatProps,
+} from "../stores/chatStore";
+import { useFileStore } from "../stores/fileStore";
+import { useInputStore } from "../stores/inputStore";
 
-interface handleSubmitProps {
-  file: File | null;
-  fileImage: string | null;
-  promptCall: string;
-  currentChat: currentChatProps[];
-  currentId: number | null;
-  addToCurrentChat: (chat: currentChatProps[]) => void;
-  updateLastChatInAllChat: (
-    message: currentChatProps,
-    chatId: number | null
-  ) => void;
-  setFile: (file: File | null) => void;
-  setAllChat: (chats: ChatSession | ChatSession[]) => void;
-  setCurrentId: (id: number) => void;
-  setIsLoading: (bool: boolean) => void;
-  isTemporaryMsg: boolean;
-}
+export const handleSubmit = async () => {
+  const isTemporaryMsg = useInputStore.getState().isTemporaryMsg;
+  const promptCall = useInputStore.getState().promptCall;
+  const setIsLoading = useInputStore.getState().setIsLoading;
 
-export const handleSubmit = async ({
-  file,
-  fileImage,
-  promptCall,
-  currentChat,
-  currentId,
-  addToCurrentChat,
-  updateLastChatInAllChat,
-  setFile,
-  setAllChat,
-  setCurrentId,
-  setIsLoading,
-  isTemporaryMsg,
-}: handleSubmitProps) => {
+  const file = useFileStore.getState().file;
+  const fileImage = useFileStore.getState().fileImage;
+  const setFile = useFileStore.getState().setFile;
+
+  const addToCurrentChat = useChatStore.getState().addToCurrentChat;
+  const setAllChat = useChatStore.getState().setAllChat;
+  const setCurrentId = useChatStore.getState().setCurrentId;
+  const updateLastChatInAllChat =
+    useChatStore.getState().updateLastChatInAllChat;
+  const currentId = useChatStore.getState().currentId;
+  const currentChat = useChatStore.getState().currentChat;
+  const eachChatId = useChatStore.getState().eachChatId;
+  const setHideEditingChatId = useChatStore.getState().setHideEditingChatId;
+
   if (!promptCall.trim()) return;
   setIsLoading(true);
 
@@ -45,21 +38,25 @@ export const handleSubmit = async ({
       throw new Error("No response from AI");
     }
 
-    const newMessage: currentChatProps = {
-      id: Date.now(),
+    const message: currentChatProps = {
+      id: crypto.randomUUID(),
       prompt: promptCall,
       response: aiResponse,
       file: file,
       fileImage: fileImage,
       isError: false,
     };
-    addToCurrentChat([newMessage]);
+    const newMessage: EachChatProps = {
+      id: crypto.randomUUID(),
+      eachChat: [message],
+    };
+    addToCurrentChat([newMessage], eachChatId);
 
     if (!isTemporaryMsg) {
       if (isFirstMessage) {
         const chatSession = {
-          id: Date.now(),
-          title: newMessage.prompt,
+          id: crypto.randomUUID(),
+          title: newMessage.eachChat[0].prompt,
           messages: [newMessage],
           timestamp: new Date().toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -71,7 +68,7 @@ export const handleSubmit = async ({
         setAllChat([chatSession]);
         setCurrentId(chatSession.id);
       } else {
-        updateLastChatInAllChat(newMessage, currentId);
+        updateLastChatInAllChat(newMessage, currentId, eachChatId);
       }
     }
     setFile(null);
@@ -80,7 +77,7 @@ export const handleSubmit = async ({
     console.error("Failed to fetch: ", error);
 
     const errorMessage: currentChatProps = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       prompt: promptCall,
       response:
         "Error occured while fetching response from server. Please try again later or refresh the page.",
@@ -88,14 +85,18 @@ export const handleSubmit = async ({
       fileImage: fileImage,
       isError: true,
     };
-    addToCurrentChat([errorMessage]);
+    const newErrorMessage: EachChatProps = {
+      id: crypto.randomUUID(),
+      eachChat: [errorMessage],
+    };
+    addToCurrentChat([newErrorMessage], eachChatId);
 
     if (!isTemporaryMsg) {
       if (isFirstMessage) {
         const chatSession = {
-          id: Date.now(),
-          title: errorMessage.prompt,
-          messages: [errorMessage],
+          id: crypto.randomUUID(),
+          title: newErrorMessage.eachChat[0].prompt,
+          messages: [newErrorMessage],
           timestamp: new Date().toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
@@ -106,10 +107,12 @@ export const handleSubmit = async ({
         setAllChat([chatSession]);
         setCurrentId(chatSession.id);
       } else {
-        updateLastChatInAllChat(errorMessage, currentId);
+        updateLastChatInAllChat(newErrorMessage, currentId, eachChatId);
       }
     }
     setFile(null);
     setIsLoading(false);
+  } finally {
+    setHideEditingChatId(null);
   }
 };

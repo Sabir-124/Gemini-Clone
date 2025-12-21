@@ -8,7 +8,7 @@ interface OptionProps {
   onLeave: () => void;
   text: string;
   icon: IconDefinition;
-  hoveredPrompt: number | null;
+  hoveredPrompt: string | null;
   hoveredOption: string | null;
   chat: currentChatProps;
 }
@@ -30,7 +30,7 @@ const Option = ({
     >
       <FontAwesomeIcon fontSize={"0.75rem"} icon={icon} />
       <div
-        className={`absolute top-[125%] left-1/2 -translate-x-1/2 w-max pointer-events-none`}
+        className={`sm:block hidden absolute top-[125%] left-1/2 -translate-x-1/2 w-max pointer-events-none`}
       >
         <Label
           condition={hoveredPrompt === chat.id && hoveredOption === text}

@@ -23,7 +23,7 @@ import { useUIStore } from "../stores/uiStore";
 import {
   useChatStore,
   type ChatSession,
-  type currentChatProps,
+  type EachChatProps,
 } from "../stores/chatStore";
 import { useInputStore } from "../stores/inputStore";
 import { useSystemStore } from "../stores/systemStore";
@@ -111,7 +111,7 @@ const Sidebar = memo(() => {
   ]);
 
   const handleSelectedChat = useCallback(
-    (chat: currentChatProps[], chatId: number) => {
+    (chat: EachChatProps[], chatId: string) => {
       setCurrentChat(chat);
       setRender(false);
       setIsChatOpen(true);
@@ -201,7 +201,7 @@ const Sidebar = memo(() => {
     setChat(chat);
   };
 
-  const handleDeleteButton = (id: number | undefined) => {
+  const handleDeleteButton = (id: string | undefined) => {
     if (id) {
       deleteChat(id);
       setShowMenu(false);

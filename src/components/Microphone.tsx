@@ -1,14 +1,15 @@
-import { faMicrophone, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMicrophone,
+  faPaperPlane,
+  faVolumeUp,
+} from "@fortawesome/free-solid-svg-icons";
 import IconFactory from "../Component Factory/IconFactory";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ImagePhrase } from "../functions/imagePhrase";
 import Label from "../Component Factory/Label";
-import { useFileStore } from "../stores/fileStore";
 import { useInputStore } from "../stores/inputStore";
-import { useChatStore } from "../stores/chatStore";
 import { useSystemStore } from "../stores/systemStore";
-import { useUIStore } from "../stores/uiStore";
 
 declare global {
   interface Window {
@@ -18,32 +19,10 @@ declare global {
 }
 
 const Microphone: React.FC = () => {
-  const file = useFileStore((state) => state.file);
-  const fileImage = useFileStore((state) => state.fileImage);
-  const setFile = useFileStore((state) => state.setFile);
-
   const promptCall = useInputStore((state) => state.promptCall);
-  const isTemporaryMsg = useInputStore((state) => state.isTemporaryMsg);
-  const setIsLoading = useInputStore((state) => state.setIsLoading);
   const setPromptCall = useInputStore((state) => state.setPromptCall);
 
-  const currentChat = useChatStore((state) => state.currentChat);
-  const currentId = useChatStore((state) => state.currentId);
-  const addToCurrentChat = useChatStore((state) => state.addToCurrentChat);
-  const updateLastChatInAllChat = useChatStore(
-    (state) => state.updateLastChatInAllChat
-  );
-  const setAllChat = useChatStore((state) => state.setAllChat);
-  const setCurrentId = useChatStore((state) => state.setCurrentId);
-  const setLoadingPrompt = useChatStore((state) => state.setLoadingPrompt);
-
-  const setImageError = useSystemStore((state) => state.setImageError);
-  const isOnline = useSystemStore((state) => state.isOnline);
-  const setOfflineMsg = useSystemStore((state) => state.setOfflineMsg);
   const setScroll = useSystemStore((state) => state.setScroll);
-
-  const setRender = useUIStore((state) => state.setRender);
-  const setIsChatOpen = useUIStore((state) => state.setIsChatOpen);
 
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
@@ -116,7 +95,7 @@ const Microphone: React.FC = () => {
         console.error("Error starting recognition: ", error);
       }
     }
-  }, [isSupported, isListening]);
+  }, [isSupported, isListening, setIsListening, recognitionRef]);
 
   const handleSendButton = useCallback(() => {
     setScroll(true);
@@ -124,47 +103,8 @@ const Microphone: React.FC = () => {
       setScroll(false);
     }, 3000);
 
-    ImagePhrase({
-      isOnline,
-      promptCall,
-      file,
-      fileImage,
-      currentChat,
-      currentId,
-      addToCurrentChat,
-      updateLastChatInAllChat,
-      setFile,
-      setAllChat,
-      setImageError,
-      setPromptCall,
-      setCurrentId,
-      setIsLoading,
-      setRender,
-      setIsChatOpen,
-      setOfflineMsg,
-      setLoadingPrompt,
-      isTemporaryMsg,
-    });
-  }, [
-    isOnline,
-    promptCall,
-    file,
-    fileImage,
-    currentChat,
-    currentId,
-    addToCurrentChat,
-    updateLastChatInAllChat,
-    setFile,
-    setAllChat,
-    setImageError,
-    setPromptCall,
-    setCurrentId,
-    setIsLoading,
-    setRender,
-    setIsChatOpen,
-    setOfflineMsg,
-    isTemporaryMsg,
-  ]);
+    ImagePhrase();
+  }, [setScroll]);
 
   return (
     <div className="relative">
@@ -183,7 +123,7 @@ const Microphone: React.FC = () => {
             onMouseEnter={() => setMicrophoneText(true)}
             onMouseLeave={() => setMicrophoneText(false)}
           >
-            <IconFactory icon={faMicrophone} />
+            <IconFactory icon={isListening ? faVolumeUp : faMicrophone} />
           </div>
         )}
       </div>

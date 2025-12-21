@@ -41,6 +41,7 @@ const MainContent = () => {
   const setCurrentChat = useChatStore((state) => state.setCurrentChat);
   const clearCurrentChat = useChatStore((state) => state.clearCurrentChat);
   const currentChat = useChatStore((state) => state.currentChat);
+  const allChat = useChatStore((state) => state.allChat);
   const loadingPrompt = useChatStore((state) => state.loadingPrompt);
 
   const isLoading = useInputStore((state) => state.isLoading);
@@ -134,6 +135,12 @@ const MainContent = () => {
   useEffect(() => {
     scrollToBottom();
   }, [scroll]);
+
+  useEffect(() => {
+    console.log("Current chat", currentChat);
+    console.log("All chat", allChat);
+    console.log("=======================");
+  }, [currentChat, allChat]);
 
   return (
     <div className="relative">
@@ -233,14 +240,6 @@ const MainContent = () => {
           className={`sticky bottom-15 w-full flex flex-col items-center gap-3 py-3 bg-[#1B1C1D] BlackShadow`}
         >
           <div
-            onClick={scrollToBottom}
-            className={`flex justify-center items-center rounded-full w-9 h-9 bg-[#282A2C] hover:bg-[#404345] cursor-pointer transition ${
-              isAtBottom ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
-          >
-            <FontAwesomeIcon icon={faArrowDown} />
-          </div>
-          <div
             className={`flex flex-col gap-2 w-full max-w-[800px] px-4 ${
               isLoading ? "pointer-events-none" : ""
             }`}
@@ -256,6 +255,17 @@ const MainContent = () => {
             </motion.div>
           </div>
         </motion.div>
+
+        <div
+          onClick={scrollToBottom}
+          className={`absolute bottom-58 left-1/2 -translate-x-1/2 flex justify-center items-center rounded-full w-9 h-9 bg-[#282A2C] hover:bg-[#404345] cursor-pointer transition ${
+            isAtBottom || currentChat.length === 0
+              ? "opacity-0 pointer-events-none"
+              : "opacity-100"
+          }`}
+        >
+          <FontAwesomeIcon icon={faArrowDown} />
+        </div>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import { useCallback, useMemo, useState } from "react";
 import {
   useChatStore,
   type ChatSession,
-  type currentChatProps,
+  type EachChatProps,
 } from "../stores/chatStore";
 import { useUIStore } from "../stores/uiStore";
 import { useInputStore } from "../stores/inputStore";
@@ -31,11 +31,11 @@ const RecentSearches = () => {
   const setTemporaryMsg = useInputStore((state) => state.setTemporaryMsg);
   const isLgScreen = useSystemStore((state) => state.isLgScreen);
 
-  const [hoveredRecentId, setHoveredRecentId] = useState<number | null>(null);
+  const [hoveredRecentId, setHoveredRecentId] = useState<string | null>(null);
   const [chat, setChat] = useState<ChatSession | null>(null);
 
   const handleSelectedChat = useCallback(
-    (chat: currentChatProps[], chatId: number) => {
+    (chat: EachChatProps[], chatId: string) => {
       setCurrentChat(chat);
       setRender(false);
       setIsChatOpen(true);
@@ -68,7 +68,9 @@ const RecentSearches = () => {
       return allChat;
     }
     return allChat.filter((chat) =>
-      chat.messages[0].prompt.toLowerCase().includes(search.toLowerCase())
+      chat.messages[0].eachChat[0].prompt
+        .toLowerCase()
+        .includes(search.toLowerCase())
     );
   }, [search, allChat]);
 
@@ -82,7 +84,7 @@ const RecentSearches = () => {
     }
   };
 
-  const handleDeleteButton = (id: number | undefined) => {
+  const handleDeleteButton = (id: string | undefined) => {
     if (id) {
       deleteChat(id);
       if (chat?.messages[0].id === currentChat[0].id) {
@@ -149,8 +151,10 @@ const RecentSearches = () => {
                         }
                       >
                         <span className="truncate">
-                          {chat.messages[0].prompt.charAt(0).toUpperCase() +
-                            chat.messages[0].prompt.substring(1)}
+                          {chat.messages[0].eachChat[0].prompt
+                            .charAt(0)
+                            .toUpperCase() +
+                            chat.messages[0].eachChat[0].prompt.substring(1)}
                         </span>
                         <div className="text-xs flex gap-2 text-[#86888a]">
                           <span>{chat.daystamp}</span>

@@ -31,9 +31,11 @@ const StarredMessages = () => {
   const isLgScreen = useSystemStore((state) => state.isLgScreen);
 
   const handleSelectedChat = useCallback(
-    (messageId: number) => {
+    (messageId: string) => {
       const chatSession = allChat.find((session) =>
-        session.messages.some((msg) => msg.id === messageId)
+        session.messages.some((group) =>
+          group.eachChat.some((msg) => msg.id === messageId)
+        )
       );
 
       if (chatSession) {
@@ -77,7 +79,7 @@ const StarredMessages = () => {
     );
   }, [search, starredMessages]);
 
-  const handleStarredDeleteButton = (id: number) => {
+  const handleStarredDeleteButton = (id: string) => {
     const filteredMsg = starredMessages.filter((msg) => msg.id !== id);
     setStarredMessages(filteredMsg);
   };

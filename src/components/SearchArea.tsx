@@ -9,44 +9,29 @@ import AiModelModal from "../Component Factory/AiModelModal";
 import Label from "../Component Factory/Label";
 import { useUIStore } from "../stores/uiStore";
 import { useInputStore } from "../stores/inputStore";
-import { useChatStore } from "../stores/chatStore";
 import { useSystemStore } from "../stores/systemStore";
 import { useFileStore } from "../stores/fileStore";
 import FileModal from "../Component Factory/FileModal";
 
 const SearchArea = () => {
-  const setRender = useUIStore((state) => state.setRender);
-  const setIsChatOpen = useUIStore((state) => state.setIsChatOpen);
   const setModelOpen = useUIStore((state) => state.setModelOpen);
   const isModelOpen = useUIStore((state) => state.isModelOpen);
-  const promptCall = useInputStore((state) => state.promptCall);
-  const setPromptCall = useInputStore((state) => state.setPromptCall);
-  const isLoading = useInputStore((state) => state.isLoading);
-  const setIsLoading = useInputStore((state) => state.setIsLoading);
-  const isTemporaryMsg = useInputStore((state) => state.isTemporaryMsg);
   const isFileModalOpen = useUIStore((state) => state.isFileModalOpen);
   const setFileModalOpen = useUIStore((state) => state.setFileModalOpen);
 
-  const currentChat = useChatStore((state) => state.currentChat);
-  const currentId = useChatStore((state) => state.currentId);
-  const addToCurrentChat = useChatStore((state) => state.addToCurrentChat);
-  const updateLastChatInAllChat = useChatStore(
-    (state) => state.updateLastChatInAllChat
-  );
-  const setAllChat = useChatStore((state) => state.setAllChat);
-  const setCurrentId = useChatStore((state) => state.setCurrentId);
-  const setLoadingPrompt = useChatStore((state) => state.setLoadingPrompt);
+  const promptCall = useInputStore((state) => state.promptCall);
+  const setPromptCall = useInputStore((state) => state.setPromptCall);
+  const isLoading = useInputStore((state) => state.isLoading);
 
-  const setImageError = useSystemStore((state) => state.setImageError);
-  const setOfflineMsg = useSystemStore((state) => state.setOfflineMsg);
-  const isOnline = useSystemStore((state) => state.isOnline);
+  const isTemporaryMsg = useInputStore((state) => state.isTemporaryMsg);
+  const isEditing = useInputStore((state) => state.isEditing);
+
   const isLgScreen = useSystemStore((state) => state.isLgScreen);
   const setScroll = useSystemStore((state) => state.setScroll);
   const selectedModal = useSystemStore((state) => state.selectedModal);
 
   const file = useFileStore((state) => state.file);
   const fileImage = useFileStore((state) => state.fileImage);
-  const setFile = useFileStore((state) => state.setFile);
   const isVisible = useFileStore((state) => state.isVisible);
   const fileMsg = useFileStore((state) => state.fileMsg);
   const isSizeError = useFileStore((state) => state.isSizeError);
@@ -147,53 +132,12 @@ const SearchArea = () => {
               setScroll(false);
             }, 3000);
 
-            ImagePhrase({
-              isOnline,
-              promptCall,
-              file,
-              fileImage,
-              currentChat,
-              currentId,
-              addToCurrentChat,
-              updateLastChatInAllChat,
-              setFile,
-              setAllChat,
-              setImageError,
-              setPromptCall,
-              setCurrentId,
-              setIsLoading,
-              setRender,
-              setIsChatOpen,
-              setOfflineMsg,
-              setLoadingPrompt,
-              isTemporaryMsg,
-            });
+            ImagePhrase();
           }
         }
       }
     },
-    [
-      isOnline,
-      promptCall,
-      file,
-      fileImage,
-      currentChat,
-      currentId,
-      addToCurrentChat,
-      updateLastChatInAllChat,
-      setFile,
-      setAllChat,
-      setImageError,
-      setPromptCall,
-      setCurrentId,
-      setIsLoading,
-      setRender,
-      setIsChatOpen,
-      setOfflineMsg,
-      setLoadingPrompt,
-      isTemporaryMsg,
-      setScroll,
-    ]
+    [promptCall, setScroll]
   );
 
   return (
@@ -203,7 +147,7 @@ const SearchArea = () => {
           isTemporaryMsg ? "border-dashed" : ""
         } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
       >
-        {file && (
+        {file && !isEditing && (
           <FilePreview fileInputRef={fileInputRef} fileImage={fileImage} />
         )}
         <textarea
@@ -215,7 +159,7 @@ const SearchArea = () => {
             isLoading ? "cursor-not-allowed" : ""
           }`}
           ref={currentTextareaRef}
-          value={promptCall}
+          value={isEditing ? "" : promptCall}
           disabled={isLoading}
           onChange={(e) => {
             setPromptCall(e.target.value);
