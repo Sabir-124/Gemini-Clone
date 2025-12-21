@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GeminiModal } from "../data/geminiModels";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useUIStore } from "../stores/uiStore";
 import { useSystemStore } from "../stores/systemStore";
@@ -7,6 +6,11 @@ import type React from "react";
 import { Activity } from "react";
 
 const AiModelModal = () => {
+  const GeminiModal = [
+    { description: "Fast all-around help", name: "flash" },
+    { description: "Reasoning, math & code", name: "pro" },
+  ];
+
   const setSelectedModal = useSystemStore((state) => state.setSelectedModal);
   const selectedModal = useSystemStore((state) => state.selectedModal);
   const setModelOpen = useUIStore((state) => state.setModelOpen);

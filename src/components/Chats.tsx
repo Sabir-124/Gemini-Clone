@@ -445,7 +445,7 @@ const Chats = () => {
               <div className="flex gap-5 items-start flex-1 overflow-hidden wrap-break-word">
                 <img
                   loading="lazy"
-                  src="/Gemini_Clone/icons/gemini.png"
+                  src="/Gemini-Clone/icons/gemini.png"
                   alt="web-icon"
                   className="w-6 h-6 hidden sm:block"
                 />
@@ -684,7 +684,7 @@ const Chats = () => {
               className="h-[70%] max-w-[80%] object-contain"
               src={
                 selectedImage === ""
-                  ? "/Gemini_Clone/images/image.png"
+                  ? "/Gemini-Clone/images/image.png"
                   : selectedImage
               }
               alt="Full size preview"
