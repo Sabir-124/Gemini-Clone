@@ -259,7 +259,10 @@ const MainContent = () => {
         <div
           onClick={scrollToBottom}
           className={`absolute bottom-58 left-1/2 -translate-x-1/2 flex justify-center items-center rounded-full w-9 h-9 bg-[#282A2C] hover:bg-[#404345] cursor-pointer transition ${
-            isAtBottom || currentChat.length === 0
+            isAtBottom ||
+            isStarredMessagesOpen ||
+            isSearchOpen ||
+            currentChat.length === 0
               ? "opacity-0 pointer-events-none"
               : "opacity-100"
           }`}
