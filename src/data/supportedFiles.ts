@@ -1,250 +1,118 @@
+import wav from "../../assets/icons/wav.png";
+import mp3 from "../../assets/icons/mp3.png";
+import aiff from "../../assets/icons/aiff.png";
+import aac from "../../assets/icons/acc.png";
+import ogg from "../../assets/icons/ogg.png";
+import flac from "../../assets/icons/flac.png";
+
+import mp4 from "../../assets/icons/mp4.png";
+import mov from "../../assets/icons/mov.png";
+import avi from "../../assets/icons/avi.png";
+import flv from "../../assets/icons/flv.png";
+import mpg from "../../assets/icons/mpg.png";
+import webm from "../../assets/icons/webm.png";
+import wmv from "../../assets/icons/wmv.png";
+import gp3 from "../../assets/icons/3gp.png";
+
+import txt from "../../assets/icons/txt.png";
+import rtf from "../../assets/icons/rtf.png";
+import pdf from "../../assets/icons/pdf.png";
+import html from "../../assets/icons/html.png";
+import css from "../../assets/icons/css.png";
+import csv from "../../assets/icons/csv.png";
+
+import js from "../../assets/icons/js.png";
+import ts from "../../assets/icons/ts.png";
+import py from "../../assets/icons/py.png";
+import java from "../../assets/icons/java.png";
+import c from "../../assets/icons/c.png";
+import cpp from "../../assets/icons/c++.png";
+import cc from "../../assets/icons/cc.png";
+import php from "../../assets/icons/php.png";
+import ruby from "../../assets/icons/ruby.png";
+import go from "../../assets/icons/go.png";
+import rust from "../../assets/icons/rust.png";
+import swift from "../../assets/icons/swift.png";
+import kt from "../../assets/icons/kt.png";
+import r from "../../assets/icons/r.png";
+import scala from "../../assets/icons/scal.png";
+import sql from "../../assets/icons/sql.png";
+import perl from "../../assets/icons/perl.png";
+import lua from "../../assets/icons/lua.png";
+
+import json from "../../assets/icons/json.png";
+import xml from "../../assets/icons/xml.png";
+import file from "../../assets/icons/file.png";
+
 export const supportedFiles = [
-  // Images (5)
-  {
-    file: "png",
-    icon: "",
-  },
-  {
-    file: "jpeg",
-    icon: "",
-  },
-  {
-    file: "jpg",
-    icon: "",
-  },
+  // Images
+  { file: "png", icon: "" },
+  { file: "jpeg", icon: "" },
+  { file: "jpg", icon: "" },
+  { file: "webp", icon: "" },
+  { file: "heic", icon: "" },
+  { file: "heif", icon: "" },
 
-  {
-    file: "webp",
-    icon: "",
-  },
-  {
-    file: "heic",
-    icon: "",
-  },
-  {
-    file: "heif",
-    icon: "",
-  },
-  // Audio (6)
-  {
-    file: "wav",
-    icon: "/Gemini-Clone/icons/wav.png",
-  },
-  {
-    file: "mp3",
-    icon: "/Gemini-Clone/icons/mp3.png",
-  },
-  {
-    file: "aiff",
-    icon: "/Gemini-Clone/icons/aiff.png",
-  },
-  {
-    file: "aac",
-    icon: "/Gemini-Clone/icons/aac.png",
-  },
-  {
-    file: "ogg",
-    icon: "/Gemini-Clone/icons/ogg.png",
-  },
-  {
-    file: "flac",
-    icon: "/Gemini-Clone/icons/flac.png",
-  },
+  // Audio
+  { file: "wav", icon: wav },
+  { file: "mp3", icon: mp3 },
+  { file: "aiff", icon: aiff },
+  { file: "aac", icon: aac },
+  { file: "ogg", icon: ogg },
+  { file: "flac", icon: flac },
 
-  // Video (9)
-  {
-    file: "mp4",
-    icon: "/Gemini-Clone/icons/mp4.png",
-  },
-  {
-    file: "mpeg",
-    icon: "/Gemini-Clone/icons/mpeg.png",
-  },
-  {
-    file: "mov",
-    icon: "/Gemini-Clone/icons/mov.png",
-  },
-  {
-    file: "avi",
-    icon: "/Gemini-Clone/icons/avi.png",
-  },
-  {
-    file: "flv",
-    icon: "/Gemini-Clone/icons/flv.png",
-  },
-  {
-    file: "mpg",
-    icon: "/Gemini-Clone/icons/mpg.png",
-  },
-  {
-    file: "webm",
-    icon: "/Gemini-Clone/icons/webm.png",
-  },
-  {
-    file: "wmv",
-    icon: "/Gemini-Clone/icons/wmv.png",
-  },
-  {
-    file: "3gp",
-    icon: "/Gemini-Clone/icons/3gp.png",
-  },
+  // Video
+  { file: "mp4", icon: mp4 },
+  { file: "mpeg", icon: file },
+  { file: "mov", icon: mov },
+  { file: "avi", icon: avi },
+  { file: "flv", icon: flv },
+  { file: "mpg", icon: mpg },
+  { file: "webm", icon: webm },
+  { file: "wmv", icon: wmv },
+  { file: "3gp", icon: gp3 },
 
-  // Documents (7)
-  {
-    file: "txt",
-    icon: "/Gemini-Clone/icons/txt.png",
-  },
-  {
-    file: "md",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "rtf",
-    icon: "/Gemini-Clone/icons/rtf.png",
-  },
-  {
-    file: "pdf",
-    icon: "/Gemini-Clone/icons/pdf.png",
-  },
-  {
-    file: "html",
-    icon: "/Gemini-Clone/icons/html.png",
-  },
-  {
-    file: "css",
-    icon: "/Gemini-Clone/icons/css.png",
-  },
-  {
-    file: "csv",
-    icon: "/Gemini-Clone/icons/csv.png",
-  },
+  // Documents
+  { file: "txt", icon: txt },
+  { file: "md", icon: file },
+  { file: "rtf", icon: rtf },
+  { file: "pdf", icon: pdf },
+  { file: "html", icon: html },
+  { file: "css", icon: css },
+  { file: "csv", icon: csv },
 
-  // Code Files (24)
-  {
-    file: "js",
-    icon: "/Gemini-Clone/icons/js.png",
-  },
-  {
-    file: "ts",
-    icon: "/Gemini-Clone/icons/ts.png",
-  },
-  {
-    file: "py",
-    icon: "/Gemini-Clone/icons/py.png",
-  },
-  {
-    file: "java",
-    icon: "/Gemini-Clone/icons/java.png",
-  },
-  {
-    file: "c",
-    icon: "/Gemini-Clone/icons/c.png",
-  },
-  {
-    file: "cpp",
-    icon: "/Gemini-Clone/icons/c++.png",
-  },
-  {
-    file: "cc",
-    icon: "/Gemini-Clone/icons/cc.png",
-  },
-  {
-    file: "h",
-    icon: "/Gemini-Clone/icons/h.png",
-  },
-  {
-    file: "cs",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "php",
-    icon: "/Gemini-Clone/icons/php.png",
-  },
-  {
-    file: "rb",
-    icon: "/Gemini-Clone/icons/ruby.png",
-  },
-  {
-    file: "go",
-    icon: "/Gemini-Clone/icons/go.png",
-  },
-  {
-    file: "rs",
-    icon: "/Gemini-Clone/icons/rust.png",
-  },
-  {
-    file: "swift",
-    icon: "/Gemini-Clone/icons/swift.png",
-  },
-  {
-    file: "kt",
-    icon: "/Gemini-Clone/icons/kt.png",
-  },
-  {
-    file: "r",
-    icon: "/Gemini-Clone/icons/r.png",
-  },
-  {
-    file: "m",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "scala",
-    icon: "/Gemini-Clone/icons/scala.png",
-  },
-  {
-    file: "sh",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "bat",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "ps1",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "sql",
-    icon: "/Gemini-Clone/icons/sql.png",
-  },
-  {
-    file: "pl",
-    icon: "/Gemini-Clone/icons/perl.png",
-  },
-  {
-    file: "lua",
-    icon: "/Gemini-Clone/icons/lua.png",
-  },
+  // Code
+  { file: "js", icon: js },
+  { file: "ts", icon: ts },
+  { file: "py", icon: py },
+  { file: "java", icon: java },
+  { file: "c", icon: c },
+  { file: "cpp", icon: cpp },
+  { file: "cc", icon: cc },
+  { file: "h", icon: file },
+  { file: "cs", icon: file },
+  { file: "php", icon: php },
+  { file: "rb", icon: ruby },
+  { file: "go", icon: go },
+  { file: "rs", icon: rust },
+  { file: "swift", icon: swift },
+  { file: "kt", icon: kt },
+  { file: "r", icon: r },
+  { file: "m", icon: file },
+  { file: "scala", icon: scala },
+  { file: "sh", icon: file },
+  { file: "bat", icon: file },
+  { file: "ps1", icon: file },
+  { file: "sql", icon: sql },
+  { file: "pl", icon: perl },
+  { file: "lua", icon: lua },
 
-  // Config/Data (6)
-
-  {
-    file: "json",
-    icon: "/Gemini-Clone/icons/json.png",
-  },
-  {
-    file: "xml",
-    icon: "/Gemini-Clone/icons/xml.png",
-  },
-  {
-    file: "yaml",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "yml",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "ini",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "properties",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
-  {
-    file: "toml",
-    icon: "/Gemini-Clone/icons/file.png",
-  },
+  // Config / Data
+  { file: "json", icon: json },
+  { file: "xml", icon: xml },
+  { file: "yaml", icon: file },
+  { file: "yml", icon: file },
+  { file: "ini", icon: file },
+  { file: "properties", icon: file },
+  { file: "toml", icon: file },
 ];

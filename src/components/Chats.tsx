@@ -1,3 +1,5 @@
+import GeminiIcon from "/icons/gemini.png";
+import ImageIcon from "/images/image.png";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { motion } from "framer-motion";
@@ -445,7 +447,7 @@ const Chats = () => {
               <div className="flex gap-5 items-start flex-1 overflow-hidden wrap-break-word">
                 <img
                   loading="lazy"
-                  src="/Gemini-Clone/icons/gemini.png"
+                  src={GeminiIcon}
                   alt="web-icon"
                   className="w-6 h-6 hidden sm:block"
                 />
@@ -682,11 +684,7 @@ const Chats = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               className="h-[70%] max-w-[80%] object-contain"
-              src={
-                selectedImage === ""
-                  ? "/Gemini-Clone/images/image.png"
-                  : selectedImage
-              }
+              src={selectedImage === "" ? ImageIcon : selectedImage}
               alt="Full size preview"
             />
             <div

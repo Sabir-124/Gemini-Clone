@@ -19,6 +19,7 @@ import {
 } from "react";
 import StarredMessages from "./StarredMessages";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import GeminiIcon from "/icons/gemini.png";
 
 const MainContent = () => {
   const render = useUIStore((state) => state.render);
@@ -219,7 +220,7 @@ const MainContent = () => {
                   <div className="flex gap-5 items-start flex-1 overflow-hidden wrap-break-word">
                     <img
                       loading="lazy"
-                      src="/Gemini-Clone/icons/gemini.png"
+                      src={GeminiIcon}
                       alt="web-icon"
                       className={`w-6 h-6 ${isLoading ? "animate-spin" : ""}`}
                     />
